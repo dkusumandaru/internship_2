@@ -1,0 +1,232 @@
+
+{%	extends	'index.html' %}
+{%	block title %} Books {%	endblock %}
+{%	block body	%}
+
+
+<div id="bodyBox" class="container">
+
+	<div>
+		<div class="col-md-12">
+			<h1><span class="fa fa-book"></span> Books <span class="pull-right">
+			<button	type="button"	class="btn	btn-info	btn-sm"	data-toggle="modal"	data-target="#myModal"> <span class="fa fa-plus-circle"></span> Add Book</button></span></h1>
+			
+		</div>
+	<table	class="table	table-striped">
+
+	<thead>
+		<tr>
+			<td>id</td>
+			<td>Name</td>
+			<td>Author</td>
+			<td>Release</td>
+			<td>Publisher</td>
+			
+			<td>Category</td>
+			<td>Action</td>
+		</tr>
+	</thead>
+
+
+	<tbody>
+
+		{% for row in dataBook %}
+
+		<tr>
+			<td>{{ row.0 }}</td>
+			<td>{{ row.1 }}</td>
+			<td>{{ row.2 }}</td>
+			<td>{{ row.3 }}</td>
+			<td>{{ row.4 }}</td>
+			<td>{{ row.7 }}</td>
+			<td>
+				<a	href="#!" class="btn btn-warning btn-xs" data-toggle="modal" data-target="#modalEdit{{	row.0	}}">Edit</a>
+				<a	href="/delete_book/{{	row.0 }}" class="btn btn-danger	btn-xs"	onclick="return	confirm('Are you sure want to delete {{ row.1 }} Book ?')">Remove</a>
+			</td>
+		</tr>
+
+
+
+
+	<!--	Modal	-->
+
+
+	<div id="modalEdit{{ row.0 }}"	class="modal fade"	role="dialog">
+
+		<div class="modal-dialog">
+
+			<div class="modal-content">
+
+
+				<div class="modal-header">
+					<h4	class="modal-title"><span class="fa fa-edit"></span>Edit Data Buku</h4>
+
+					<span class="pull-right">
+						<button	type="button"	class="close"	data-dismiss="modal">&times;</button>
+					</span>
+					
+
+				</div>
+
+				<div class="modal-body">
+
+					<form action="{{ url_for('update_book') }}"	method="POST">
+
+						<input	type="hidden"	class="form-control" name="idBook" value="{{ row.0 }}">
+						<div class="form-group">
+							<label>Book Name</label>
+							<input	type="text"	class="form-control" name="nameBook" value="{{ row.1 }}">
+						</div>
+
+						<div class="form-group">
+							<label>Book Author</label>
+							<input	type="text"	class="form-control" name="authorBook" value="{{ row.2 }}">
+						</div>
+
+						<div class="form-group">
+							<label>Book Release</label>
+							<input	type="number" class="form-control" name="releaseBook" value="{{ row.3 }}">
+						</div>
+
+						<div class="form-group">
+							<label>Book Publisher</label>
+							<input	type="text"	class="form-control" name="publisherBook" value="{{ row.4 }}">
+						</div>
+
+
+						<div class="form-group">
+							<button	class="btn	btn-warning" type="submit">Update</button>
+						</div>
+					</form>
+				</div>
+
+
+				<div class="modal-footer">
+					<button	type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+				</div>
+
+
+			</div>
+		</div>
+	</div>
+
+
+
+
+{%	else	%}
+
+
+	<tr>
+		<td	colspan="5">Unbelievable.	No	entries	here	so	far</td>
+	</tr>
+
+
+{%	endfor	%}
+
+
+	</tbody>
+	</table>
+
+
+	</div>
+
+
+
+
+</div>
+
+
+
+
+
+
+
+<!--	Modal	-->
+
+
+<div id="myModal" class="modal fade" role="dialog">
+
+
+	<div class="modal-dialog">
+	<div class="modal-content">
+	<div class="modal-header">
+
+
+		
+		<h4	class="modal-title"><span class="fa fa-plus-circle"></span> Add	Data</h4>
+		<span class="pull-right">
+			<button	type="button"	class="close"	data-dismiss="modal">&times;</button>
+		</span>
+	</div>
+
+
+	<div class="modal-body">
+
+		<form action="{{ url_for('insert_book') }}"	method="POST">
+			<div class="form-group">
+				<label>Book Name</label>
+				<input	type="text"	class="form-control" name="nameBook">
+			</div>
+
+			<div class="form-group">
+				<label>Book Author</label>
+				<input	type="text"	class="form-control" name="authorBook">
+			</div>
+
+			<div class="form-group">
+				<label>Book Category</label>
+
+				<select class="form-control" name="idCategory">
+					<option value="">-</option>
+					{% for cat in dataCategory  %}
+						<option value="{{ cat.0 }}">{{ cat.1 }}</option>
+					{%	endfor	%}					
+				</select>
+
+			</div>
+
+
+
+			<div class="form-group">
+				<label>Book Release</label>
+				<input	type="number" class="form-control" name="releaseBook" placeholder="2020">
+			</div>
+
+			<div class="form-group">
+				<label>Book Publisher</label>
+				<input	type="text"	class="form-control" name="publisherBook">
+			</div>
+
+
+
+			<div class="form-group">
+				<center>
+				<button	class="btn btn-primary" type="submit"><span class="fa fa-save"></span> Save</button>
+				</center>
+			</div>
+		</form>
+	</div>
+
+
+		<div class="modal-footer">
+			<button	type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+		</div>
+
+
+	</div>
+
+
+	</div>
+
+
+</div>
+
+
+	
+
+
+
+<!--	/.container	-->
+
+
+{%	endblock	%}

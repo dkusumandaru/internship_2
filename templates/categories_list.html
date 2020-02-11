@@ -1,0 +1,187 @@
+
+{%	extends	'index.html' %}
+{%	block title %} Categories {%	endblock %}
+{%	block body	%}
+
+
+<div id="bodyBox" class="container">
+
+	<div>
+		<div class="col-md-12">
+			<h1><span class="fa fa-tag"></span> Categoies <span class="pull-right">
+			<button	type="button"	class="btn	btn-info	btn-sm"	data-toggle="modal"	data-target="#myModal"> <span class="fa fa-plus-circle"></span> Add Category</button></span></h1>
+			
+		</div>
+	<table	class="table	table-striped">
+
+	<thead>
+		<tr>
+			<td>No</td>
+			<td>Category</td>
+			<td>Code</td>
+			<td>Action</td>
+		</tr>
+	</thead>
+
+
+	<tbody>
+
+		{% for row in data %}
+
+		<tr>
+			<td>{{ row.0 }}</td>
+			<td>{{ row.1 }}</td>
+			<td>{{ row.2 }}</td>
+			<td>
+				<a	href="#!" class="btn btn-warning btn-xs" data-toggle="modal" data-target="#modalEdit{{	row.0	}}">Edit</a>
+				<a	href="/delete_category/{{	row.0 }}" class="btn btn-danger	btn-xs"	onclick="return	confirm('Are you sure want to delete {{ row.1 }} category ?')">Remove</a>
+			</td>
+		</tr>
+
+
+
+
+	<!--	Modal	-->
+
+
+	<div id="modalEdit{{ row.0 }}"	class="modal fade"	role="dialog">
+
+
+		<div class="modal-dialog">
+
+
+			<div class="modal-content">
+
+
+				<div class="modal-header">
+					<h4	class="modal-title"><span class="fa fa-edit"></span>Edit Data Buku</h4>
+
+					<span class="pull-right">
+						<button	type="button"	class="close"	data-dismiss="modal">&times;</button>
+					</span>
+					
+
+				</div>
+
+
+				<div class="modal-body">
+
+					<form action="{{ url_for('update_category') }}"	method="POST">
+
+
+						<div class="form-group">
+							<label>Nama:</label>
+							<input type="hidden" name="idCategory" value="{{ row.0 }}">
+							<input type="text" class="form-control" name="nameCategory" value="{{ row.1 }}">
+						</div>
+
+
+						<div class="form-group">
+							<button	class="btn	btn-warning" type="submit">Update</button>
+						</div>
+					</form>
+				</div>
+
+
+				<div class="modal-footer">
+					<button	type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+				</div>
+
+
+			</div>
+		</div>
+	</div>
+
+
+
+
+{%	else	%}
+
+
+	<tr>
+		<td	colspan="3">Unbelievable.	No	entries	here	so	far</td>
+	</tr>
+
+
+{%	endfor	%}
+
+
+	</tbody>
+	</table>
+
+
+	</div>
+
+
+
+
+</div>
+
+
+
+
+
+
+
+<!--	Modal	-->
+
+
+<div id="myModal" class="modal fade" role="dialog">
+
+
+	<div class="modal-dialog">
+	<div class="modal-content">
+	<div class="modal-header">
+
+
+		
+		<h4	class="modal-title"><span class="fa fa-plus-circle"></span> Add	Data</h4>
+		<span class="pull-right">
+			<button	type="button"	class="close"	data-dismiss="modal">&times;</button>
+		</span>
+	</div>
+
+
+	<div class="modal-body">
+
+		<form action="{{ url_for('insert_category') }}"	method="POST">
+			<div class="form-group">
+				<label>Category Name</label>
+				<input	type="text"	class="form-control" name="namaCategory">
+			</div>
+			<div class="form-group">
+				<label>Categoty Code</label>
+				<input	type="text"	class="form-control" name="codeCategory">
+			</div>
+
+
+
+			<div class="form-group">
+				<button	class="btn btn-primary" type="submit"><span class="fa fa-save"></span> Save</button>
+			</div>
+		</form>
+	</div>
+
+
+		<div class="modal-footer">
+			<button	type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+		</div>
+
+
+	</div>
+
+
+	</div>
+
+
+</div>
+
+
+	
+
+
+
+<!--	/.container	-->
+
+
+{%	endblock	%}
