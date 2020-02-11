@@ -1,1 +1,1 @@
-# internship_2
+# internship_2 : CRUD with Flask (python)
