@@ -1,5 +1,6 @@
-from flask import Flask, render_template, request, url_for, redirect
+from flask import Flask, render_template, request, url_for, redirect, session
 from flask_mysqldb import MySQL
+from flask_hashing import Hashing
 
 app = Flask(__name__)
 app.config['MYSQL_HOST'] = 'localhost'
@@ -7,33 +8,87 @@ app.config['MYSQL_USER'] = 'root'
 app.config['MYSQL_PASSWORD'] = ''
 app.config['MYSQL_DB'] = 'perpustakaan_db'
 mysql = MySQL(app)
+hashing = Hashing(app)
+
+app.secret_key = "Hell0"
 
 @app.route('/')
 def home():
+	return redirect(url_for('login'))
+
+@app.route('/login')
+def login():
+	userLogAccess = session.get('userLogAccess', 'FALSE')
+	if userLogAccess != 'FALSE':
+		return redirect('books')
+	else:
+		return render_template('user_login.html')
+
+@app.route('/logout')
+def logout():
+	session.clear()
+	return redirect('login')
+
+@app.route('/auth', methods=['POST'])
+def auth():
+	username = request.form['username']
+	password = request.form['password']
+
+	# username = '15.11.8815'
+	# password = '12341234'
+
+	passhash = hashing.hash_value(password, salt='abcd')
+	cur = mysql.connection.cursor()
+	cur.execute("SELECT librarian_password FROM librarian WHERE librarian_id = %s",(username,))
+	mysql.connection.commit()
+
+	dataAuth = cur.fetchall()
+
+	countAuth = int(len(dataAuth))
+	if countAuth == 1:
+
+		n = 0
+		[x[n] for x in dataAuth]
+		for row in dataAuth:
+			passwordLibrarian = row[n]
 
 
-	return redirect(url_for('books'))
+		if passhash == passwordLibrarian:
+			session['userLogAccess'] = username
+			return redirect('books')
+
+		else:
+			return 'Password false!!!'
+			
+	else:
+		return 'Username ont found!!!'
 	
+@app.route('/dashboad')
+def dashboad():
+
 @app.route('/books')
 def books():
 
-	cur = mysql.connection.cursor()
-	cur.execute("SELECT * FROM book_category")
-	dataCategory = cur.fetchall()
-	cur.close()
+	userLogAccess = session.get('userLogAccess', 'FALSE')
+	if userLogAccess != 'FALSE':
 
+		cur = mysql.connection.cursor()
+		cur.execute("SELECT * FROM book_category")
+		dataCategory = cur.fetchall()
+		cur.close()
 
-	cur = mysql.connection.cursor()
-	cur.execute("SELECT * FROM book JOIN book_category ON book.category_id = book_category.category_id")
-	dataBook = cur.fetchall()
-	#return str(dataBook)
-	cur.close()
-	return render_template('books_list.html', dataBook=dataBook, dataCategory = dataCategory)
+		cur = mysql.connection.cursor()
+		cur.execute("SELECT * FROM book JOIN book_category ON book.category_id = book_category.category_id")
+		dataBook = cur.fetchall()
 
+		cur.close()
+		return render_template('books_list.html', dataBook=dataBook, dataCategory = dataCategory)
+	else:
+		return redirect('logout')
 
 @app.route('/insert',methods=["POST"])
 def insert_book():
-	pass
+	
 	idCategory = request.form['idCategory']
 
 	cur = mysql.connection.cursor()
@@ -97,7 +152,6 @@ def insert_book():
 	mysql.connection.commit()
 	return redirect(url_for('books'))
 
-
 @app.route('/update_book', methods=["POST"])
 def update_book():
 	idBook = request.form['idBook']
@@ -111,7 +165,6 @@ def update_book():
 	mysql.connection.commit()
 	return redirect(url_for('books'))
 
-
 @app.route('/delete_book/<string:idBook>', methods=["GET"])
 def delete_book(idBook):
 	cur = mysql.connection.cursor()
@@ -119,23 +172,17 @@ def delete_book(idBook):
 	mysql.connection.commit()
 	return redirect(url_for('books'))
 
-
-@app.route('/hello')
-def hello():
-	pass
-
-	cur.execute("SELECT  FROM book_category")
-	dataCategory = cur.fetchall()
-	return
-
-
 @app.route('/categories')
 def categories():
-	cur = mysql.connection.cursor()
-	cur.execute("SELECT * FROM book_category")
-	dataCategory = cur.fetchall()
-	cur.close()
-	return render_template('categories_list.html', data=dataCategory)
+	userLogAccess = session.get('userLogAccess', 'FALSE')
+	if userLogAccess != 'FALSE':
+		cur = mysql.connection.cursor()
+		cur.execute("SELECT * FROM book_category")
+		dataCategory = cur.fetchall()
+		cur.close()
+		return render_template('categories_list.html', data=dataCategory)
+	else:
+		return redirect('logout')
 
 @app.route('/insert_category', methods=["POST"])
 def insert_category():
