@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Feb 11, 2020 at 10:56 AM
+-- Generation Time: Mar 10, 2020 at 10:00 AM
 -- Server version: 10.4.11-MariaDB
 -- PHP Version: 7.4.2
 
@@ -103,6 +103,13 @@ CREATE TABLE `librarian` (
   `librarian_password` varchar(255) NOT NULL,
   `role_user` enum('admin','petugas') NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Dumping data for table `librarian`
+--
+
+INSERT INTO `librarian` (`librarian_id`, `librarian_name`, `librarian_password`, `role_user`) VALUES
+('15.11.8815', 'Darma Kusumandaru', '696120bb2f37aaab9372d29c8e8d6878ce3ea91535e64f3620876c4370250b29', 'admin');
 
 -- --------------------------------------------------------
 

@@ -65,6 +65,7 @@ def auth():
 	
 @app.route('/dashboad')
 def dashboad():
+	pass
 
 @app.route('/books')
 def books():
